@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- BootStrap CSS -->
+    <link rel="stylesheet" media="screen" href={{ url_for('static', filename='bootstrap.min.css') }}>
+    <title>Network Health Report Status</title>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">
+            <img src="/static/usc_logo.jpg" width="30" class="d-inline-block align-top" alt="U.S. Cellular Logo">
+            Network Health Status
+        </a>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-3 table-success">
+                Test ran and was Successful
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3 table-danger">
+                Test ran and Failed
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3 table-warning">
+                Test has not executed recently
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-sm table-hover table-bordered text-nowrap">
+            <thead class="thead-light">
+                <tr>
+                    <th>InfoVista SVT Test</th>
+                    <th>Asheville, NC</th>
+                    <th>Cedar Rapids, IA</th>
+                    <th>Clinton,NC</th>
+                    <th>Columbia, OH</th>
+                    <th>Congress Park, NH</th>
+                    <th>Eureka, CA</th>
+                    <th>Granite Hill, ME</th>
+                    <th>Greenville, NC</th>
+                    <th>Johnston, IA</th>
+                    <th>Joplin, MO</th>
+                    <th>Knoxville, TN</th>
+                    <th>Lynchburg, VA</th>
+                    <th>Madison, WI</th>
+                    <th>Medford, OR</th>
+                    <th>Menasha, WI</th>
+                    <th>Morgantown, WV</th>
+                    <th>New Berlin, WI</th>
+                    <th>Oklahoma City, OK</th>
+                    <th>Omaha, NE</th>
+                    <th>Owasso, OK</th>
+                    <th>Peoria, IL</th>
+                    <th>Roanoke, VA</th>
+                    <th>Rockford, IL</th>
+                    <th>Salina, KS</th>
+                    <th>Yakima, WA</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if neh_status %}
+                    {% for svt_test_name, location_status_dict in neh_status.items() %}
+                        <tr>
+                            <th>{{ svt_test_name }}</th>
+                            {% for lcc_location, lcc_status in location_status_dict.items() %}
+                                {% if lcc_status == 'success' %}
+                                    <td class="table-success"></td>
+                                {% elif lcc_status == 'failure' %}
+                                    <td class="table-danger"></td>
+                                {% elif lcc_status == 'warning' %}
+                                    <td class="table-warning"></td>
+                                {% else %}
+                                    <td></td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="../../static/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- BootStrap CSS -->
+    <link rel="stylesheet" media="screen" href={{ url_for('static', filename='bootstrap.min.css') }}>
+    <title>Network Health Report SMS Tracker</title>
+</head>
+<body>
+    <nav class="navbar navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">
+            <img src="/static/usc_logo.jpg" width="30" class="d-inline-block align-top" alt="U.S. Cellular Logo">
+            Network Health Report SMS Tracker
+        </a>
+        <form method="POST">
+            {{ form.csrf_token }}
+            <button type="submit" name="logout_btn" value='logout' class="btn btn-outline-danger">Logout</button>
+        </form>
+    </nav>
+
+    <div class="container-fluid border border-primary ml-2 mt-2">
+        <div class="row mt-3">
+            <div class="col-lg-auto">
+                <h5>Register</h5>
+                <form method="POST">
+                    {{ form.csrf_token }}
+                    <div class="form-group form-inline">
+                        <input class="form-control corm-control-lg" name="first_name" type="text" id="first_name" placeholder="First">
+                        <input class="form-control corm-control-lg" name="last_name" type="text" id="last_name" placeholder="Last">
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input " type="radio" name="carrier" id="att" value="att" required>
+                        <label class="form-check-label mr-sm-3" for="att">AT&T</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="carrier" id="verizon" value="verizon">
+                        <label class="form-check-label mr-sm-3" for="verizon">Verizon</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="carrier" id="uscc" value="uscc">
+                        <label class="form-check-label mr-sm-3" for="uscc">U.S. Cellular</label>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control form-control-lg" name="phone_num" type="text" id="phone_num" maxlength="10" aria-describedby="phoneHelpBlock"
+                        placeholder="Phone Number(i.e. 6302536781)">
+                    </div>
+                    <button type="submit" class="btn btn-outline-dark mb-3">Submit</button>
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% if 'Phone Number added' not in message: %}
+                                    <div class="alert alert-danger" role="alertdialog">
+                                        {{ message }}
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-success" role="alertdialog">
+                                        Registration Successful!
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </form>
+            </div>
+            <div class="col-lg-auto">
+                <h5>Search</h5>
+                <form method="GET" role="form">
+                    {{ form.csrf_token }}
+                    <div class="form-group form-inline">
+                        <input class="form-control form-control-lg" name="search_first" type="text" id="search_first" placeholder="First">
+                        <input class="form-control form-control-lg" name="search_last" type="text" id="search_last" placeholder="Last">
+                    </div>
+                    <button type="submit" class="btn btn-outline-dark mb-3">Submit</button>
+                    {% if display_phone %}
+                        <div class="alert alert-info" role="alertdialog">
+                            {{ display_phone }}
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="../../static/bootstrap.min.js"></script>
+</body>
+</html>
