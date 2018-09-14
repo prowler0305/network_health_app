@@ -24,7 +24,6 @@ class NetworkHealthDashboard(MethodView):
         #                                )
         # self.imsi_list_get_resp = None
         self.login_redirect_response = None
-        self.nh_status_dir_found_list = Common.find_file_in_project(os.environ.get('neh_status'))
 
     def get(self):
         """
@@ -37,12 +36,10 @@ class NetworkHealthDashboard(MethodView):
         #     self.redirect_to_uscc_login()
         #     return self.login_redirect_response
 
-        if len(self.nh_status_dir_found_list) != 0:
-            nh_status_path = self.nh_status_dir_found_list[0]
-            rc, nh_status_dict = Common.read_json_file(nh_status_path)
+        rc, nh_status_dict = Common.read_json_file(os.environ.get('neh_status'))
 
-            if rc:
-                return render_template('network_health/nh_dashboard.html', neh_status=nh_status_dict)
+        if rc:
+            return render_template('network_health/nh_dashboard.html', neh_status=nh_status_dict)
 
         return render_template('network_health/nh_dashboard.html')
 
