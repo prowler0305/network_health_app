@@ -12,6 +12,7 @@ from common.common import Common
 import requests
 import json
 import os
+import time
 
 
 class NetworkHealthDashboard(MethodView):
@@ -36,7 +37,13 @@ class NetworkHealthDashboard(MethodView):
         #     self.redirect_to_uscc_login()
         #     return self.login_redirect_response
 
-        rc, nh_status_dict = Common.read_json_file(os.environ.get('neh_status'))
+        while True:
+            try:
+                rc, nh_status_dict = Common.read_json_file(os.environ.get('neh_status'))
+                break
+            except json.JSONDecodeError as json_e:
+                time.sleep(3)
+                continue
 
         if rc:
             return render_template('network_health/nh_dashboard.html', neh_status=nh_status_dict)
