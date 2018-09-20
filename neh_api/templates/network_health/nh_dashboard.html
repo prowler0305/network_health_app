@@ -81,13 +81,29 @@
                         <th class="rotate"><div><span>Peoria, IL</span></div></th>
                         <th class="rotate"><div><span>Rockford, IL</span></div></th>
                         <th class="rotate"><div><span>Salina, KS</span></div></th>
-
                         <th class="rotate"><div><span></span></div></th>
                     </tr>
                 </thead>
                 <tbody class="table-bordered">
                     {% if neh_status %}
+                        {% set ptn = namespace(previous_tech_name='') %}
+                        {% set ctn = namespace(current_tech_name='') %}
                         {% for location_status_dict in neh_status.values() %}
+                            {% if 'CDMA' in location_status_dict.display_name %}
+                                {% set ctn.current_tech_name = 'CDMA' %}
+                            {% endif %}
+                            {% if 'EVDO' in location_status_dict.display_name %}
+                                {% set ctn.current_tech_name = 'EVDO' %}
+                            {% endif %}
+                            {% if 'LTE' in location_status_dict.display_name %}
+                                {% set ctn.current_tech_name = 'LTE' %}
+                            {% endif %}
+                            {% if 'VoLTE' in location_status_dict.display_name %}
+                                {% set ctn.current_tech_name = 'VoLTE' %}
+                            {% endif %}
+                            {% if (ptn.previous_tech_name != '') and (ptn.previous_tech_name != ctn.current_tech_name) %}
+                                <tr><td></td></tr>
+                            {% endif %}
                             <tr>
                                 <th class="col-sm-2">{{ location_status_dict.display_name }}</th>
                                 {% for lcc_location, lcc_status in location_status_dict.items() %}
@@ -104,6 +120,7 @@
                                     {% endif %}
                                 {% endfor %}
                             </tr>
+                            {% set ptn.previous_tech_name = ctn.current_tech_name %}
                         {% endfor %}
                     {% endif %}
                 </tbody>
