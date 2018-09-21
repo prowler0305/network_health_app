@@ -25,6 +25,11 @@ class NetworkHealthDashboard(MethodView):
         #                                )
         # self.imsi_list_get_resp = None
         self.login_redirect_response = None
+        self.auto_tracker_url = os.environ.get('auto_tracker_url')
+        self.auto_tracker_user = os.environ.get('auto_tracker_user')
+        self.auto_tracker_pass = os.environ.get('auto_tracker_pass')
+        self.auto_tracker_resp = None
+        self.auto_tracker_id = "SA502"
 
     def get(self):
         """
@@ -41,60 +46,19 @@ class NetworkHealthDashboard(MethodView):
             try:
                 rc, nh_status_dict = Common.read_json_file(os.environ.get('neh_status'))
                 break
-            except json.JSONDecodeError as json_e:
+            except json.JSONDecodeError:
                 time.sleep(3)
                 continue
 
         if rc:
+
+            self.auto_tracker_resp = requests.post(url=self.auto_tracker_url,
+                                                   data={'automation': self.auto_tracker_id},
+                                                   auth=(self.auto_tracker_user, self.auto_tracker_pass), verify=False)
+
             return render_template('network_health/nh_dashboard.html', neh_status=nh_status_dict)
 
         return render_template('network_health/nh_dashboard.html')
-
-    def post(self):
-        """
-        """
-
-        # INFO: No requirement for being authenticated to add phone number for text message services. If needed
-        # INFO: uncomment both 'if' blocks below.
-        # if 'logout_btn' in request.form:
-        #     self.delete()
-        #     return self.login_redirect_response
-        #
-        # if request.cookies.get('access_token_cookie') is None:
-        #     self.redirect_to_uscc_login()
-        #     return self.login_redirect_response
-
-        # else:
-        #     # INFO: needed if JWT_TOKEN_LOCATION is set to headers as opposed to in cookies
-        #     # self.imsi_header['Authorization'] = 'JWT {}'.format(request.cookies.get('access_token_cookie'))
-        #     # INFO: With JWT in cookies set the CSRF token is still expected to be in the header for POST to succeed
-        #     self.imsi_header['X-CSRF-TOKEN'] = request.cookies.get('csrf_access_token')
-        #     self.imsi_header['content_type'] = 'application/json'
-
-        form = NeTextForm()
-
-        if form.validate_on_submit():
-            if len(self.neh_text_dir_found_list) != 0:
-                neh_text_path = self.neh_text_dir_found_list[0]
-                nehtext_file_dict = self.data_file_to_dict(neh_text_path)
-                name_key = '{} {}'.format(form.first_name.data, form.last_name.data)
-
-                if name_key not in nehtext_file_dict:
-                    nehtext_file_dict[name_key] = {form.phone_num.data: form.carrier.data}
-
-                    with open(neh_text_path, mode='w') as nehwfh:
-                        json.dump(nehtext_file_dict, nehwfh)
-
-                Common.create_flash_message(message="Phone Number added")
-            else:
-                Common.create_flash_message(message="'{}' file not found. Please contact Core Automation Team.".format(os.environ.get('neh_text_file')))
-
-        else:
-            if len(form.errors) != 0:
-                for form_field, error_message_text in form.errors.items():
-                    Common.create_flash_message(message=form_field + ':' + error_message_text[0])
-
-        return render_template('network_health/ne_text_tracking.html', form=form)
 
     def redirect_to_uscc_login(self):
         """
