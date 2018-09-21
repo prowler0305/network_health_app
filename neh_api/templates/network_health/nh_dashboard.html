@@ -56,7 +56,8 @@
                                     </div>
                                 </div>
                             </div>
-                            InfoVista SVT Test</th>
+                            Data last Refreshed: {{neh_status.last_refreshed}}
+                        </th>
                         <th class="rotate"><div><span>Clinton,NC</span></div></th>
                         <th class="rotate"><div><span>Congress Park, NH</span></div></th>
                         <th class="rotate"><div><span>Granite Hill, ME</span></div></th>
@@ -89,39 +90,41 @@
                     {% if neh_status %}
                         {% set ptn = namespace(previous_tech_name='') %}
                         {% set ctn = namespace(current_tech_name='') %}
-                        {% for location_status_dict in neh_status.values() %}
-                            {% if 'CDMA' in location_status_dict.display_name %}
-                                {% set ctn.current_tech_name = 'CDMA' %}
-                            {% endif %}
-                            {% if 'EVDO' in location_status_dict.display_name %}
-                                {% set ctn.current_tech_name = 'EVDO' %}
-                            {% endif %}
-                            {% if 'LTE' in location_status_dict.display_name %}
-                                {% set ctn.current_tech_name = 'LTE' %}
-                            {% endif %}
-                            {% if 'VoLTE' in location_status_dict.display_name %}
-                                {% set ctn.current_tech_name = 'VoLTE' %}
-                            {% endif %}
-                            {% if (ptn.previous_tech_name != '') and (ptn.previous_tech_name != ctn.current_tech_name) %}
-                                <tr><td></td></tr>
-                            {% endif %}
-                            <tr>
-                                <th class="col-sm-2">{{ location_status_dict.display_name }}</th>
-                                {% for lcc_location, lcc_status in location_status_dict.items() %}
-                                    {% if lcc_location != 'display_name' %}
-                                        {% if lcc_status == 'success' %}
-                                            <td class="table-success"></td>
-                                        {% elif lcc_status == 'failure' %}
-                                            <td class="table-danger"></td>
-                                        {% elif lcc_status == 'warning' %}
-                                            <td class="table-warning"></td>
-                                        {% else %}
-                                            <td></td>
+                        {% for neh_status_key, neh_status_value in neh_status.items() %}
+                            {% if neh_status_key != 'last_refreshed' %}
+                                {% if 'CDMA' in neh_status_value.display_name %}
+                                    {% set ctn.current_tech_name = 'CDMA' %}
+                                {% endif %}
+                                {% if 'EVDO' in neh_status_value.display_name %}
+                                    {% set ctn.current_tech_name = 'EVDO' %}
+                                {% endif %}
+                                {% if 'LTE' in neh_status_value.display_name %}
+                                    {% set ctn.current_tech_name = 'LTE' %}
+                                {% endif %}
+                                {% if 'VoLTE' in neh_status_value.display_name %}
+                                    {% set ctn.current_tech_name = 'VoLTE' %}
+                                {% endif %}
+                                {% if (ptn.previous_tech_name != '') and (ptn.previous_tech_name != ctn.current_tech_name) %}
+                                    <tr><td></td></tr>
+                                {% endif %}
+                                <tr>
+                                    <th class="col-sm-2">{{ neh_status_value.display_name }}</th>
+                                    {% for lcc_location, lcc_status in neh_status_value.items() %}
+                                        {% if lcc_location != 'display_name' %}
+                                            {% if lcc_status == 'success' %}
+                                                <td class="table-success"></td>
+                                            {% elif lcc_status == 'failure' %}
+                                                <td class="table-danger"></td>
+                                            {% elif lcc_status == 'warning' %}
+                                                <td class="table-warning"></td>
+                                            {% else %}
+                                                <td></td>
+                                            {% endif %}
                                         {% endif %}
-                                    {% endif %}
-                                {% endfor %}
-                            </tr>
-                            {% set ptn.previous_tech_name = ctn.current_tech_name %}
+                                    {% endfor %}
+                                </tr>
+                                {% set ptn.previous_tech_name = ctn.current_tech_name %}
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
                 </tbody>
