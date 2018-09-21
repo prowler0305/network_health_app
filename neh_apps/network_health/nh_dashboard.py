@@ -51,10 +51,11 @@ class NetworkHealthDashboard(MethodView):
                 continue
 
         if rc:
-
-            self.auto_tracker_resp = requests.post(url=self.auto_tracker_url,
-                                                   data={'automation': self.auto_tracker_id},
-                                                   auth=(self.auto_tracker_user, self.auto_tracker_pass), verify=False)
+            if os.environ.get('exec_env') != 'local':
+                self.auto_tracker_resp = requests.post(url=self.auto_tracker_url,
+                                                       data={'automation': self.auto_tracker_id},
+                                                       auth=(self.auto_tracker_user, self.auto_tracker_pass),
+                                                       verify=False)
 
             return render_template('network_health/nh_dashboard.html', neh_status=nh_status_dict)
 
