@@ -108,7 +108,7 @@
                                     <tr><td></td></tr>
                                 {% endif %}
                                 <tr>
-                                    <th class="col-sm-2">{{ neh_status_value.display_name }}</th>
+                                    <th class="col-sm-2" data-toggle="tooltip" data-html="true" title="{{neh_status_key}}">{{ neh_status_value.display_name }}</th>
                                     {% for lcc_location, lcc_status in neh_status_value.items() %}
                                         {% if lcc_location != 'display_name' %}
                                             {% if lcc_status == 'success' %}
