@@ -88,21 +88,28 @@
                 </thead>
                 <tbody class="table-bordered">
                     {% if neh_status %}
+                        <tr>
+                            <td></td>
+                            <td class="font-weight-bold text-md-center" colspan="7">Ashburn</td>
+                            <td class="font-weight-bold text-md-center" colspan="7">Atlanta</td>
+                            <td class="font-weight-bold text-md-center" colspan="3">Santa Clara</td>
+                            <td class="font-weight-bold text-md-center" colspan="8">Schaumburg</td>
+                        </tr>
                         <tr><td class="font-weight-bold">CDMA</td></tr>
                         {% set ptn = namespace(previous_tech_name='') %}
                         {% set ctn = namespace(current_tech_name='') %}
                         {% for neh_status_key, neh_status_value in neh_status.items() %}
                             {% if neh_status_key != 'last_refreshed' %}
-                                {% if 'CDMA' in neh_status_value.display_name %}
+                                {% if neh_status_value.tech_type == 'CDMA' %}
                                     {% set ctn.current_tech_name = 'CDMA' %}
                                 {% endif %}
-                                {% if 'EVDO' in neh_status_value.display_name %}
+                                {% if neh_status_value.tech_type == 'EVDO' %}
                                     {% set ctn.current_tech_name = 'EVDO' %}
                                 {% endif %}
-                                {% if 'LTE' in neh_status_value.display_name %}
+                                {% if neh_status_value.tech_type == 'LTE' %}
                                     {% set ctn.current_tech_name = 'LTE' %}
                                 {% endif %}
-                                {% if 'VoLTE' in neh_status_value.display_name %}
+                                {% if neh_status_value.tech_type == 'VoLTE' %}
                                     {% set ctn.current_tech_name = 'VoLTE' %}
                                 {% endif %}
                                 {% if (ptn.previous_tech_name != '') and (ptn.previous_tech_name != ctn.current_tech_name) %}
@@ -111,7 +118,7 @@
                                 <tr>
                                     <th class="col-sm-2" data-toggle="tooltip" data-html="true" title="{{neh_status_key}}">{{ neh_status_value.display_name }}</th>
                                     {% for lcc_location, lcc_status in neh_status_value.items() %}
-                                        {% if lcc_location != 'display_name' %}
+                                        {% if lcc_location != 'display_name' and lcc_location != 'tech_type' %}
                                             {% if lcc_status == 'success' %}
                                                 <td class="table-success"></td>
                                             {% elif lcc_status == 'failure' %}
