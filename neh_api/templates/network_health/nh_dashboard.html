@@ -88,6 +88,7 @@
                 </thead>
                 <tbody class="table-bordered">
                     {% if neh_status %}
+                        <tr><td class="font-weight-bold">CDMA</td></tr>
                         {% set ptn = namespace(previous_tech_name='') %}
                         {% set ctn = namespace(current_tech_name='') %}
                         {% for neh_status_key, neh_status_value in neh_status.items() %}
@@ -105,7 +106,7 @@
                                     {% set ctn.current_tech_name = 'VoLTE' %}
                                 {% endif %}
                                 {% if (ptn.previous_tech_name != '') and (ptn.previous_tech_name != ctn.current_tech_name) %}
-                                    <tr><td></td></tr>
+                                    <tr><td class="font-weight-bold">{{ctn.current_tech_name}}</td></tr>
                                 {% endif %}
                                 <tr>
                                     <th class="col-sm-2" data-toggle="tooltip" data-html="true" title="{{neh_status_key}}">{{ neh_status_value.display_name }}</th>
