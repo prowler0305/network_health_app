@@ -7,7 +7,7 @@
 
     <!-- BootStrap CSS -->
     <link rel="stylesheet" media="screen" href={{ url_for('static', filename='bootstrap.min.css') }}>
-    <title>Network Health Report Status</title>
+    <title>Exfo SVT Test Details</title>
     <style>
         th.rotate {
             height: 120px;
@@ -26,19 +26,13 @@
         th.indent{
             text-indent: 50px;
         }
-        td.exfo-details > td > a{
-            display: block;
-            width:100%;
-            height:100%;
-            text-decoration:none;
-        }
     </style>
 </head>
 <body>
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand" href="#">
             <img src="/static/usc_logo.jpg" width="30" class="d-inline-block align-top" alt="U.S. Cellular Logo">
-            Network Health Status
+            Exfo SVT Test Result Details
         </a>
     </nav>
 
@@ -129,8 +123,7 @@
                                     {% for lcc_location, lcc_status in neh_status_value.items() %}
                                         {% if lcc_location != 'display_name' and lcc_location != 'tech_type' %}
                                             {% if lcc_status == 'success' %}
-                                                <!--<td class="table-success"><a href="/exfo_test_details" style="display: block;width:100%;height:100%;text-decoration:none;">&nbsp</a></td>-->
-                                                <td class="table-success"><a href="/exfo_test_details" class="exfo-details">&nbsp</a></td>
+                                                <td class="table-success"></td>
                                             {% elif lcc_status == 'failure' %}
                                                 <td class="table-danger"></td>
                                             {% elif lcc_status == 'warning' %}
