@@ -32,7 +32,7 @@
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand" href="#">
             <img src="/static/usc_logo.jpg" width="30" class="d-inline-block align-top" alt="U.S. Cellular Logo">
-            {{tc_name}} Details
+            Exfo SVT Test Result Details
         </a>
     </nav>
 
@@ -40,29 +40,108 @@
         <div class="table-responsive">
             <table class="table table-bordered table-sm table-hover text-nowrap">
                 <thead class="thead-light">
-                <tr>
-                    {% for key in svt_list_tc_details[0].keys() %}
-                        <th>{{key}}</th>
-                    {% endfor %}
-                </tr>
+                    <tr>
+                        <th>
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="table-success">
+                                        Test ran and was Successful
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="table-danger">
+                                        Test ran and Failed
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="table-warning">
+                                        Test has not executed recently
+                                    </div>
+                                </div>
+                            </div>
+                            Data last Refreshed: {{neh_status.last_refreshed}}(UTC)
+                        </th>
+                        <th class="rotate"><div><span>Clinton,NC</span></div></th>
+                        <th class="rotate"><div><span>Congress Park, NH</span></div></th>
+                        <th class="rotate"><div><span>Granite Hill, ME</span></div></th>
+                        <th class="rotate"><div><span>Greenville, NC</span></div></th>
+                        <th class="rotate"><div><span>Lynchburg, VA</span></div></th>
+                        <th class="rotate"><div><span>Morgantown, WV</span></div></th>
+                        <th class="rotate"><div><span>Roanoke, VA</span></div></th>
+                        <th class="rotate"><div><span>Asheville, NC</span></div></th>
+                        <th class="rotate"><div><span>Knoxville, TN</span></div></th>
+                        <th class="rotate"><div><span>Madison, WI</span></div></th>
+                        <th class="rotate"><div><span>Menasha, WI</span></div></th>
+                        <th class="rotate"><div><span>New Berlin, WI</span></div></th>
+                        <th class="rotate"><div><span>Oklahoma City, OK</span></div></th>
+                        <th class="rotate"><div><span>Owasso, OK</span></div></th>
+                        <th class="rotate"><div><span>Eureka, CA</span></div></th>
+                        <th class="rotate"><div><span>Medford, OR</span></div></th>
+                        <th class="rotate"><div><span>Yakima, WA</span></div></th>
+                        <th class="rotate"><div><span>Cedar Rapids, IA</span></div></th>
+                        <th class="rotate"><div><span>Columbia, OH</span></div></th>
+                        <th class="rotate"><div><span>Johnston, IA</span></div></th>
+                        <th class="rotate"><div><span>Joplin, MO</span></div></th>
+                        <th class="rotate"><div><span>Omaha, NE </span></div></th>
+                        <th class="rotate"><div><span>Peoria, IL</span></div></th>
+                        <th class="rotate"><div><span>Rockford, IL</span></div></th>
+                        <th class="rotate"><div><span>Salina, KS</span></div></th>
+                        <th class="rotate"><div><span></span></div></th>
+                    </tr>
                 </thead>
                 <tbody>
-                    {% for svt_tc_details_dicts in svt_list_tc_details %}
+                    {% if neh_status %}
                         <tr>
-                            {% for test_data in svt_tc_details_dicts.values() %}
-                                <td>
-                                    {{test_data}}
-                                </td>
-                            {% endfor %}
+                            <td></td>
+                            <td class="font-weight-bold text-md-center" colspan="7">Ashburn</td>
+                            <td class="font-weight-bold text-md-center" colspan="7">Atlanta</td>
+                            <td class="font-weight-bold text-md-center" colspan="3">Santa Clara</td>
+                            <td class="font-weight-bold text-md-center" colspan="8">Schaumburg</td>
                         </tr>
-                    {% endfor %}
+                        <tr><td class="font-weight-bold">CDMA</td></tr>
+                        {% set ptn = namespace(previous_tech_name='') %}
+                        {% set ctn = namespace(current_tech_name='') %}
+                        {% for neh_status_key, neh_status_value in neh_status.items() %}
+                            {% if neh_status_key != 'last_refreshed' %}
+                                {% if neh_status_value.tech_type == 'CDMA' %}
+                                    {% set ctn.current_tech_name = 'CDMA' %}
+                                {% endif %}
+                                {% if neh_status_value.tech_type == 'EVDO' %}
+                                    {% set ctn.current_tech_name = 'EVDO' %}
+                                {% endif %}
+                                {% if neh_status_value.tech_type == 'LTE' %}
+                                    {% set ctn.current_tech_name = 'LTE' %}
+                                {% endif %}
+                                {% if neh_status_value.tech_type == 'VoLTE' %}
+                                    {% set ctn.current_tech_name = 'VoLTE' %}
+                                {% endif %}
+                                {% if (ptn.previous_tech_name != '') and (ptn.previous_tech_name != ctn.current_tech_name) %}
+                                    <tr><td class="font-weight-bold">{{ctn.current_tech_name}}</td></tr>
+                                {% endif %}
+                                <tr>
+                                    <th class="col-sm-2 indent" data-toggle="tooltip" data-html="true" title="{{neh_status_key}}">{{ neh_status_value.display_name }}</th>
+                                    {% for lcc_location, lcc_status in neh_status_value.items() %}
+                                        {% if lcc_location != 'display_name' and lcc_location != 'tech_type' %}
+                                            {% if lcc_status == 'success' %}
+                                                <td class="table-success"></td>
+                                            {% elif lcc_status == 'failure' %}
+                                                <td class="table-danger"></td>
+                                            {% elif lcc_status == 'warning' %}
+                                                <td class="table-warning"></td>
+                                            {% else %}
+                                                <td></td>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                                {% set ptn.previous_tech_name = ctn.current_tech_name %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
                 </tbody>
             </table>
         </div>
     </div>
-    <form>
-        <button type="button" class="btn btn-outline-primary" onclick="history.back()">Go Back</button>
-    </form>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
