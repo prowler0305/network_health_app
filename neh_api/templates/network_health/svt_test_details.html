@@ -7,6 +7,9 @@
 
     <!-- BootStrap CSS -->
     <link rel="stylesheet" media="screen" href={{ url_for('static', filename='bootstrap.min.css') }}>
+    <!--FontAwesome Free CDN-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
     <title>Exfo SVT Test Details</title>
     <style>
         th.rotate {
@@ -49,10 +52,27 @@
                 <tbody>
                     {% for svt_tc_details_dicts in svt_list_tc_details %}
                         <tr>
-                            {% for test_data in svt_tc_details_dicts.values() %}
-                                <td>
-                                    {{test_data}}
-                                </td>
+                            {% for test_key, test_data in svt_tc_details_dicts.items() %}
+                                {% if test_key == 'UEA_Success' or test_key == 'UEB_Success' %}
+                                    {% if test_data == 'success' %}
+                                    <td>
+                                        <span style="color: green"><i class="fas fa-thumbs-up"></i></span>
+                                    </td>
+                                    {% elif test_data == 'failed' %}
+                                        <td>
+                                            <span style="color: red"><i class="far fa-thumbs-down"></i></span>
+                                        </td>
+                                    {% else %}
+                                        <td>
+                                            {{test_data}}
+                                        </td>
+                                    {% endif %}
+                                {% else %}
+                                    <td>
+                                        {{test_data}}
+                                    </td>
+                                {% endif %}
+
                             {% endfor %}
                         </tr>
                     {% endfor %}
