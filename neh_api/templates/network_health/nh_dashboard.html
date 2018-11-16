@@ -26,13 +26,11 @@
         th.indent{
             text-indent: 50px;
         }
-        td a{
+        td.exfo-details > td > a{
             display: block;
             width:100%;
-            text-decoration: none;
-        }
-        td a:hover{
-            text-decoration: none;
+            height:100%;
+            text-decoration:none;
         }
     </style>
 </head>
@@ -132,12 +130,11 @@
                                         {% if lcc_location != 'display_name' and lcc_location != 'tech_type' %}
                                             {% if lcc_status == 'success' %}
                                                 <!--<td class="table-success"><a href="/exfo_test_details" style="display: block;width:100%;height:100%;text-decoration:none;">&nbsp</a></td>-->
-                                                <td class="table-success"><a href={{ url_for("svt_details", test_case=neh_status_key, lcc=lcc_location)}}>&nbsp;</a></td>
-{#                                                <td class="table-success"><a href="/exfo_test_details">&nbsp;</a></td>#}
+                                                <td class="table-success"><a href="/exfo_test_details" class="exfo-details">&nbsp</a></td>
                                             {% elif lcc_status == 'failure' %}
-                                                <td class="table-danger"><a href="/exfo_test_details">&nbsp;</a></td>
+                                                <td class="table-danger"></td>
                                             {% elif lcc_status == 'warning' %}
-                                                <td class="table-warning"><a href="/exfo_test_details">&nbsp;</a></td>
+                                                <td class="table-warning"></td>
                                             {% else %}
                                                 <td></td>
                                             {% endif %}
