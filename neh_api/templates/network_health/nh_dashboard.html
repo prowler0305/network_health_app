@@ -26,12 +26,6 @@
         th.indent{
             text-indent: 50px;
         }
-        td.exfo-details > td > a{
-            display: block;
-            width:100%;
-            height:100%;
-            text-decoration:none;
-        }
     </style>
 </head>
 <body>
@@ -129,8 +123,7 @@
                                     {% for lcc_location, lcc_status in neh_status_value.items() %}
                                         {% if lcc_location != 'display_name' and lcc_location != 'tech_type' %}
                                             {% if lcc_status == 'success' %}
-                                                <!--<td class="table-success"><a href="/exfo_test_details" style="display: block;width:100%;height:100%;text-decoration:none;">&nbsp</a></td>-->
-                                                <td class="table-success"><a href="/exfo_test_details" class="exfo-details">&nbsp</a></td>
+                                                <td class="table-success"></td>
                                             {% elif lcc_status == 'failure' %}
                                                 <td class="table-danger"></td>
                                             {% elif lcc_status == 'warning' %}
@@ -156,18 +149,4 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="../../static/bootstrap.min.js"></script>
 </body>
-<!-- Start of Rocket.Chat Livechat Script -->
-<!--<script type="text/javascript">-->
-    <!--(function(w, d, s, u) {-->
-        <!--w.RocketChat = function(c) { w.RocketChat._.push(c) }; w.RocketChat._ = []; w.RocketChat.url = u;-->
-        <!--var h = d.getElementsByTagName(s)[0], j = d.createElement(s);-->
-        <!--j.async = true; j.src = 'https://rocketchat.engapps.uscc.com/packages/rocketchat_livechat/assets/rocketchat-livechat.min.js?_=201702160944';-->
-        <!--h.parentNode.insertBefore(j, h);-->
-    <!--})(window, document, 'script', 'https://rocketchat.engapps.uscc.com/livechat');-->
-    <!--// RocketChat(function() {-->
-    <!--//     this.setDepartment('Bill');-->
-    <!--// });-->
-
-<!--</script>-->
-<!-- End of Rocket.Chat Livechat Script -->
 </html>
