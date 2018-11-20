@@ -44,7 +44,8 @@
             <table class="table table-bordered table-sm table-hover text-nowrap">
                 <thead class="thead-light">
                 <tr>
-                    {% for key in svt_list_tc_details[0].keys() %}
+                    <th>Date/Time</th>
+                    {% for key in svt_list_tc_details[0].keys() if key != 'Date/Time' %}
                         <th>{{key}}</th>
                     {% endfor %}
                 </tr>
@@ -52,8 +53,12 @@
                 <tbody>
                     {% for svt_tc_details_dicts in svt_list_tc_details %}
                         <tr>
-                            {% for test_key, test_data in svt_tc_details_dicts.items() %}
-                                {% if test_key == 'UEA_Success' or test_key == 'UEB_Success' %}
+                            <td>
+                                {{svt_tc_details_dicts['Date/Time']}}
+                            </td>
+                            {% for test_key, test_data in svt_tc_details_dicts.items() if test_key != 'Date/Time' %}
+
+                                {% if test_key == 'UEA_Success' or test_key == 'UEB_Success' or 'Overall_Success' %}
                                     {% if test_data == 'success' %}
                                     <td>
                                         <span style="color: green"><i class="fas fa-thumbs-up"></i></span>

@@ -33,6 +33,8 @@ class SvtDetails(MethodView):
         lcc_list_resp = requests.get(self.tems_svt_api_base + '/lcc/list')
         if lcc_list_resp.status_code == requests.codes.ok:
             for lcc_location_item in lcc_list_resp.json():
+                # INFO: This 'if' statement below is needed due to a typo in the SVT test details from Info Vista.
+                # INFO: Once this is correct these lines can be removed.
                 if lcc_location_item.get('lcc_name') == 'Roanoake':
                     lcc_location_item['lcc_name'] = 'Roanoke'
                 if lcc_location_item.get('lcc_name').lower() == lcc_site:
@@ -83,18 +85,24 @@ class SvtDetails(MethodView):
                 dict_of_test_details['Failure Category'] = 'System'
 
         if dict_of_test_details.get('UEA_Success') is not None:
-            if dict_of_test_details.get('UEA_Success') == 0:
+            if dict_of_test_details.get('UEA_Success') == 1:
                 dict_of_test_details['UEA_Success'] = 'success'
             else:
                 dict_of_test_details['UEA_Success'] = 'failed'
 
         if dict_of_test_details.get('UEB_Success') is not None:
-            if dict_of_test_details.get('UEB_Success') == 0:
+            if dict_of_test_details.get('UEB_Success') == 1:
                 dict_of_test_details['UEB_Success'] = 'success'
             else:
                 dict_of_test_details['UEB_Success'] = 'failed'
 
         if dict_of_test_details.get('Date/Time') is not None:
             dict_of_test_details['Date/Time'] = parse(dict_of_test_details.get('Date/Time')).strftime("%m/%d/%Y %H:%M")
+
+        if dict_of_test_details.get('Overall_Success') is not None:
+            if dict_of_test_details.get('Overall_Success') == 1.0:
+                dict_of_test_details['Overall_Success'] = 'success'
+            else:
+                dict_of_test_details['Overall_Success'] = 'failed'
 
         return
