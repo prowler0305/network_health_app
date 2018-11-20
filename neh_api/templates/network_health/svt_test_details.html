@@ -39,52 +39,87 @@
         </a>
     </nav>
 
-    <div class="container col-md-12">
-        <div class="table-responsive">
-            <table class="table table-bordered table-sm table-hover text-nowrap">
-                <thead class="thead-light">
-                <tr>
-                    <th>Date/Time</th>
-                    {% for key in svt_list_tc_details[0].keys() if key != 'Date/Time' %}
-                        <th>{{key}}</th>
-                    {% endfor %}
-                </tr>
-                </thead>
-                <tbody>
-                    {% for svt_tc_details_dicts in svt_list_tc_details %}
-                        <tr>
-                            <td>
-                                {{svt_tc_details_dicts['Date/Time']}}
-                            </td>
-                            {% for test_key, test_data in svt_tc_details_dicts.items() if test_key != 'Date/Time' %}
+    {% if svt_list_tc_details %}
+        <div class="container col-md-12">
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm table-hover text-nowrap">
+                    <thead class="thead-light">
+                    <tr>
+                        <th>Date/Time</th>
+                        {% for key in svt_list_tc_details[0].keys() if key != 'Date/Time' %}
+                            <th>{{key}}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                        {% for svt_tc_details_dicts in svt_list_tc_details %}
+                            <tr>
+                                <td>
+                                    {{svt_tc_details_dicts['Date/Time']}}
+                                </td>
+                                {% for test_key, test_data in svt_tc_details_dicts.items() if test_key != 'Date/Time' %}
 
-                                {% if test_key == 'UEA_Success' or test_key == 'UEB_Success' or 'Overall_Success' %}
-                                    {% if test_data == 'success' %}
-                                    <td>
-                                        <span style="color: green"><i class="fas fa-thumbs-up"></i></span>
-                                    </td>
-                                    {% elif test_data == 'failed' %}
+                                    {% if test_key == 'UEA_Success' or test_key == 'UEB_Success' or 'Overall_Success' %}
+                                        {% if test_data == 'success' %}
                                         <td>
-                                            <span style="color: red"><i class="far fa-thumbs-down"></i></span>
+                                            <span style="color: green"><i class="fas fa-thumbs-up"></i></span>
                                         </td>
+                                        {% elif test_data == 'failed' %}
+                                            <td>
+                                                <span style="color: red"><i class="far fa-thumbs-down"></i></span>
+                                            </td>
+                                        {% else %}
+                                            <td>
+                                                {{test_data}}
+                                            </td>
+                                        {% endif %}
                                     {% else %}
                                         <td>
                                             {{test_data}}
                                         </td>
                                     {% endif %}
-                                {% else %}
-                                    <td>
-                                        {{test_data}}
-                                    </td>
-                                {% endif %}
 
-                            {% endfor %}
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    {% else %}
+        <button type="button" class="btn btn-danger btn-block" data-toggle="modal" data-target="#errorModal">Error
+            retrieving {{tc_name}} test data. Click for details.</button>
+        <!-- Modal -->
+        <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="errorModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% if error_dict.error_reason == 'no_lcc_match' %}
+                            <p>Could not find matching LCC location in SVT API for: {{lcc_location}}.</p>
+                        {% elif error_dict.error_reason == 'list_api_call_failed' %}
+                            <p>Call to SVT API /lcc/list endpoint failed with status code: {{error_dict.api_status_code}}</p>
+                        {% elif error_dict.error_reason == 'test_details_api_call_failed' %}
+                            <p>Call to SVT API /tc/{{error_dict.test_case_id}}/{{error_dict.lcc_code}} endpoint failed
+                            with status code: {{error_dict.api_status_code}}</p>
+                        {% else %}
+                            <p>No error details available due to an unkown error occurred.</p>
+                        {% endif %}
+                        <p>Please report this error to the SA3 Core Automation Team. Make sure to indicate the test case
+                        name and the LCC location you were trying to view.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
     <form>
         <button type="button" class="btn btn-outline-primary" onclick="history.back()">Go Back</button>
     </form>
@@ -94,19 +129,8 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="../../static/bootstrap.min.js"></script>
-</body>
-<!-- Start of Rocket.Chat Livechat Script -->
-<!--<script type="text/javascript">-->
-    <!--(function(w, d, s, u) {-->
-        <!--w.RocketChat = function(c) { w.RocketChat._.push(c) }; w.RocketChat._ = []; w.RocketChat.url = u;-->
-        <!--var h = d.getElementsByTagName(s)[0], j = d.createElement(s);-->
-        <!--j.async = true; j.src = 'https://rocketchat.engapps.uscc.com/packages/rocketchat_livechat/assets/rocketchat-livechat.min.js?_=201702160944';-->
-        <!--h.parentNode.insertBefore(j, h);-->
-    <!--})(window, document, 'script', 'https://rocketchat.engapps.uscc.com/livechat');-->
-    <!--// RocketChat(function() {-->
-    <!--//     this.setDepartment('Bill');-->
-    <!--// });-->
 
-<!--</script>-->
-<!-- End of Rocket.Chat Livechat Script -->
+    <!--Triggers a modal right on page load.-->
+    <!--<script>$('#myModal').modal()</script>-->
+</body>
 </html>

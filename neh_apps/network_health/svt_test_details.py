@@ -18,6 +18,7 @@ class SvtDetails(MethodView):
                                            'UEB_TestCase', 'UEA_MSISDN', 'UEB_MSISDN', 'Sequence']
         self.fields_to_rename_dict = dict(DateTime_Projector='Date/Time', OverallFailureType='Failure Category',
                                           UEA_Duration='UEA Duration(seconds)', UEB_Duration='UEB Duration(seconds)')
+        self.svt_api_error_reason_dict = dict(error_reason=None, api_status_code=None, lcc_code=None, test_case_id=None)
 
     def get(self):
         """
@@ -37,6 +38,8 @@ class SvtDetails(MethodView):
                 # INFO: Once this is correct these lines can be removed.
                 if lcc_location_item.get('lcc_name') == 'Roanoake':
                     lcc_location_item['lcc_name'] = 'Roanoke'
+                # elif lcc_location_item.get('lcc_name') == 'Oklahoma City':
+                #     lcc_location_item['lcc_name'] = 'Oklahoma'
                 if lcc_location_item.get('lcc_name').lower() == lcc_site:
                     lcc_code = lcc_location_item.get('lcc_abbrv')
                     lcc_test_details_resp = requests.get(self.tems_svt_api_base + '/tc/' + requesting_test_case + '/' +
@@ -65,9 +68,25 @@ class SvtDetails(MethodView):
                             for key, value in details_dict.items():
                                 if value is None:
                                     details_dict[key] = ""
+                        return render_template('network_health/svt_test_details.html',
+                                               svt_list_tc_details=lcc_details_result_list,
+                                               tc_name=lcc_details_dict.get('tc_name'))
+                    else:
+                        self.svt_api_error_reason_dict['error_reason'] = 'test_details_api_call_failed'
+                        self.svt_api_error_reason_dict['lcc_code'] = lcc_code
+                        self.svt_api_error_reason_dict['test_case_id'] = requesting_test_case
+                        self.svt_api_error_reason_dict['api_status_code'] = lcc_test_details_resp.status_code
 
-        return render_template('network_health/svt_test_details.html', svt_list_tc_details=lcc_details_result_list,
-                               tc_name=lcc_details_dict.get('tc_name'))
+            if self.svt_api_error_reason_dict.get('error_reason') is None:
+                self.svt_api_error_reason_dict['error_reason'] = 'no_lcc_match'
+        else:
+            self.svt_api_error_reason_dict['error_reason'] = 'list_api_call_failed'
+            self.svt_api_error_reason_dict['api_status_code'] = lcc_list_resp.status_code
+
+        return render_template('network_health/svt_test_details.html',
+                               error_dict=self.svt_api_error_reason_dict,
+                               lcc_location=lcc_site,
+                               tc_name=request.args.get('test_case'))
 
     def alter_field_data(self, dict_of_test_details):
         """
